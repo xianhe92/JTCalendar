@@ -66,6 +66,13 @@
  */
 - (void)calendarDidLoadNextPage:(JTCalendarManager *)calendar;
 
+//add by wxc
+- (void)calendarDidPresentPageManully:(JTCalendarManager *)calendar;
+
+- (void)calendarDidPresentPageProgrammatically:(JTCalendarManager *)calendar;
+
+- (void)calendarWillBeginDragging:(JTCalendarManager *)calendar;
+
 /*!
  * Provide a view conforming to `JTCalendarPage` protocol, used as page for the contentView.
  * Return an instance of `JTCalendarPageView` by default.

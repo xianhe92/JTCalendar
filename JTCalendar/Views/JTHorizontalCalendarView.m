@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, JTCalendarPageMode) {
     JTCalendarPageModeCenterRight
 };
 
-@interface JTHorizontalCalendarView (){
+@interface JTHorizontalCalendarView () <UIScrollViewDelegate> {
     CGSize _lastSize;
     
     UIView<JTCalendarPage> *_leftView;
@@ -60,6 +60,7 @@ typedef NS_ENUM(NSInteger, JTCalendarPageMode) {
     self.showsVerticalScrollIndicator = NO;
     self.pagingEnabled = YES;
     self.clipsToBounds = YES;
+    self.delegate = self;
 }
 
 - (void)layoutSubviews
@@ -342,7 +343,6 @@ typedef NS_ENUM(NSInteger, JTCalendarPageMode) {
     _leftView.date = [_manager.delegateManager dateForPreviousPageWithCurrentDate:date];
     _centerView.date = date;
     _rightView.date = [_manager.delegateManager dateForNextPageWithCurrentDate:date];
-    
     [self updateMenuDates];
     
     [self updatePageMode];
@@ -444,6 +444,27 @@ typedef NS_ENUM(NSInteger, JTCalendarPageMode) {
     [_manager.scrollManager setMenuPreviousDate:_leftView.date
                                     currentDate:_centerView.date
                                        nextDate:_rightView.date];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if ([self.manager.delegate respondsToSelector:@selector(calendarDidPresentPageManully:)]) {
+        [self.manager.delegate calendarDidPresentPageManully:self.manager];
+    }
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    if ([self.manager.delegate respondsToSelector:@selector(calendarDidPresentPageProgrammatically:)]) {
+        [self.manager.delegate calendarDidPresentPageProgrammatically:self.manager];
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([self.manager.delegate respondsToSelector:@selector(calendarWillBeginDragging:)]) {
+        [self.manager.delegate calendarWillBeginDragging:self.manager];
+    }
 }
 
 @end
